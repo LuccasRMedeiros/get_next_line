@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/10 00:57:21 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/10 12:38:15 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,63 +18,50 @@
 ** Read function returns the size of the file read.
 ** Buf pointer receives the text read, limited by the nbyte argument.
 ** Read continues to advance through the document as many times it is called.
+** Line is the pointer that gonna be processed by get_next_line.
+** get_next_line should return error (-1) when face some issues like
+** - file descriptor called in arguments don't have nothing to be read
+** - **line is (null)
+** - read function returned error (-1)
+** - malloc function could not allocate memory
 */
 
 int	get_next_line(int fd, char **line)
 {
-	static char	*rline;
-	size_t		b;
-	size_t		i;
+	char	*rline;
+	size_t	b;
+	size_t	i;
 
-	printf("fd: \e[1;32m%i\e[0m\n", fd);
-	b = read(fd, *line, 100); // Fixed value for testing purposes
-	printf("\e[1;37m%s\e[0m\n", *line);
+	b = read(fd, rline, 2495); // Fixed value for testing purposes
 	i = 0;
-	while (i <= b && (*line[i] != '\n' && *line[i] != '\0'))
+	while (i <= b && (line[0][i] != '\n' && line[0][i] != '\0'))
 	{
-		printf("*line[\e[1;35m%zu\e[0m]: \e[1;33m%i\e[0m\n", i, *line[i]);
 		i++;
 	}
-	printf("i: \e[1;32m%zu\e[0m\n", i);
-	if (*line[i] == '\0')
+	if (line[0][i] == '\0')
 	{
-		printf("Found the end of file\n");
 		return (0);
 	}
 	else if (!(rline = malloc(sizeof(char) * i)))
 	{
-		printf("malloc didn't managed to allocate memory\n");
 		return (-1);
 	}
-	while (i >= 0)
+	while (i > 0)
 	{
-		printf("Entered last while loop\n");
-		rline[i] = *line[i];
+		rline[i] = line[0][i];
 		i--;
 	}
-	printf("i: \e[1;32m%zu\e[0m\n", i);
 	free(rline);
-	printf("Freed \e[1;35mrline\e[0m\n");
 	return (1);
 }
 
 int	main()
 {
-	char *content = (char*)malloc(sizeof(char) * 2149);
+	char *content = (char*)malloc(sizeof(char) * 2495);
 	int	fd = open("TRoS.txt", O_RDONLY, 0);
-	int	sz = read(fd, content, 100);
-	int	i;
-
-	printf("\e[1;37m%s\e[0m\nsize: \e[1;32m%i\e[0m\n", content, sz);
-	for (i = 0; i <= 21; i += 1)
-	{
-		sz = read(fd, content, 100);
-		printf("\e[1;35mTime %i\e[0m:\n\e[1;37m%s\e[0m\n", i, content);
-	}
-
 	int	gnl = get_next_line(fd, &content);
 
-	printf("\e[1;37m%s\e[0m\nsize: \e[1;32m%i\e[0m\n", content, gnl);
+	printf("gnl: \e[1;32m%i\e[0m\ncontent:\n\e[1;37m%s\e[0m\n", gnl, content);
 	free(content);
 	return 0;
 }
