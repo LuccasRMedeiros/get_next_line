@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/10 12:38:15 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/10 17:11:47 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,19 +20,21 @@
 ** Read continues to advance through the document as many times it is called.
 ** Line is the pointer that gonna be processed by get_next_line.
 ** get_next_line should return error (-1) when face some issues like
-** - file descriptor called in arguments don't have nothing to be read
-** - **line is (null)
-** - read function returned error (-1)
-** - malloc function could not allocate memory
+** - file descriptor called in arguments don't have nothing to be read;
+** - **line is (null);
+** - read function returned error (-1);
+** - malloc function could not allocate memory;
+** After each read the next line should be ready to be read.
 */
 
 int	get_next_line(int fd, char **line)
 {
-	char	*rline;
-	size_t	b;
-	size_t	i;
+	static char	*rf;
+	char		*temp;
+	size_t		b;
+	size_t		i;
 
-	b = read(fd, rline, 2495); // Fixed value for testing purposes
+	b = read(fd, rf, 100); // Fixed value for testing purposes
 	i = 0;
 	while (i <= b && (line[0][i] != '\n' && line[0][i] != '\0'))
 	{

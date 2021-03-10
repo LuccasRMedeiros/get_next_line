@@ -6,13 +6,24 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:16:40 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/05 10:17:40 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/10 15:38:02 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 
-void	not_implemented()
+char	*ft_strchr(const char *str, int c)
 {
-	return ;
+	unsigned char	find;
+	size_t			i;
+
+	i = 0;
+	find = (unsigned char)c;
+	while (str[i] != find)
+	{
+		if (str[i] == '\0' && find != '\0')
+			return (NULL);
+		i++;
+	}
+	return ((char*)str + i);
 }
