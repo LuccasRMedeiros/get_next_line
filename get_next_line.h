@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:34 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/11 14:25:05 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/11 14:49:16 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@
 size_t  ft_strlen(const char *str);
 char    *gnl_strdup(char const *str);
 char    *ft_strchr(const char *str, int c);
-char    *ft_strjoin(char const *s1, char const *s2);
 char	*ft_reallocncat(char *dst, char const *src);
 char    *gnl_substr(char const *s, unsigned int start, size_t len);
 int		get_next_line(int fd, char **line);
