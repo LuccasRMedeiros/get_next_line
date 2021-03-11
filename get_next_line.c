@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/10 17:11:47 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/11 00:42:30 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,40 +21,50 @@
 ** Line is the pointer that gonna be processed by get_next_line.
 ** get_next_line should return error (-1) when face some issues like
 ** - file descriptor called in arguments don't have nothing to be read;
+** - file descriptor is invalid (less than zero, more than RLIMIT_NOFILE);
 ** - **line is (null);
 ** - read function returned error (-1);
 ** - malloc function could not allocate memory;
 ** After each read the next line should be ready to be read.
+** "hunter" should tell what error has been found before the code be done
+** "hunter" returns 1 when it found an error and 0 when everything is fine to go
 */
+
+static int	hunter(int fd, char **line, char *buffer)
+{
+	if (fd < 0 || fd > RLIMIT_NOFILE)
+	{
+		printf("Problem encountered with fd value (\e[1;32m%i\e[0m\n", fd);
+		return (1);
+	}
+	else if (BUFFER_SIZE <= 0)
+	{
+		printf("\e[1;31merror: \e[0mBUFFER_SIZE should be greater than zero.\n");
+		return (1);
+	}
+	else if (!buffer)
+	{
+		printf("Malloc could not fetch the solicited amount of memory.\n");
+		return (1);
+	}
+	return (0);
+}
+
+static int	read_file(int fd, char *buf, char *temp, int *n)
+{
+	return 0;
+}
 
 int	get_next_line(int fd, char **line)
 {
 	static char	*rf;
-	char		*temp;
-	size_t		b;
-	size_t		i;
+	char		*buffer;
 
-	b = read(fd, rf, 100); // Fixed value for testing purposes
-	i = 0;
-	while (i <= b && (line[0][i] != '\n' && line[0][i] != '\0'))
-	{
-		i++;
-	}
-	if (line[0][i] == '\0')
-	{
-		return (0);
-	}
-	else if (!(rline = malloc(sizeof(char) * i)))
-	{
+	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
+	if (hunter(fd, line, buffer))
 		return (-1);
-	}
-	while (i > 0)
-	{
-		rline[i] = line[0][i];
-		i--;
-	}
-	free(rline);
-	return (1);
+	free(buffer);
+	return 0;
 }
 
 int	main()
@@ -63,7 +73,7 @@ int	main()
 	int	fd = open("TRoS.txt", O_RDONLY, 0);
 	int	gnl = get_next_line(fd, &content);
 
-	printf("gnl: \e[1;32m%i\e[0m\ncontent:\n\e[1;37m%s\e[0m\n", gnl, content);
+	printf("gnl: \e[1;32m%i\e[0m\n", gnl);
 	free(content);
 	return 0;
 }
