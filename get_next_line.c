@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/11 00:42:30 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/11 10:03:14 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,8 +26,10 @@
 ** - read function returned error (-1);
 ** - malloc function could not allocate memory;
 ** After each read the next line should be ready to be read.
-** "hunter" should tell what error has been found before the code be done
-** "hunter" returns 1 when it found an error and 0 when everything is fine to go
+** "hunter" should tell what error has been found before the code be done.
+** "hunter" returns 1 when it find an error and 0 when everything is fine to go.
+** "read_file" will read the file in fd and return 1 for success and 0 for fail-
+** the reason to read in a loop is due to the objective to get a line.
 */
 
 static int	hunter(int fd, char **line, char *buffer)
@@ -52,7 +54,16 @@ static int	hunter(int fd, char **line, char *buffer)
 
 static int	read_file(int fd, char *buf, char *temp, int *n)
 {
-	return 0;
+	while (*n && !(ft_strchr(temp, '\n')))
+	{
+		*n = read(fd, buf, BUFFER_SIZE);
+		if (*n < 0)
+			return (0);
+	}
+	temp = (char *)gnl_calloc(sizeof(char) * BUFFER_SIZE + 1, BUFFER_SIZE);
+	if (!temp)
+		return (0);
+
 }
 
 int	get_next_line(int fd, char **line)
