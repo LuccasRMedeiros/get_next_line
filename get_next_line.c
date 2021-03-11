@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/11 10:03:14 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/11 10:40:22 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ static int	hunter(int fd, char **line, char *buffer)
 	return (0);
 }
 
-static int	read_file(int fd, char *buf, char *temp, int *n)
+static int	read_file(int fd, char *buf, char *rf, int *n)
 {
 	while (*n && !(ft_strchr(temp, '\n')))
 	{
@@ -60,10 +60,6 @@ static int	read_file(int fd, char *buf, char *temp, int *n)
 		if (*n < 0)
 			return (0);
 	}
-	temp = (char *)gnl_calloc(sizeof(char) * BUFFER_SIZE + 1, BUFFER_SIZE);
-	if (!temp)
-		return (0);
-
 }
 
 int	get_next_line(int fd, char **line)

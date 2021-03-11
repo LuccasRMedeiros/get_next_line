@@ -6,9 +6,13 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:16:40 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/10 23:55:21 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/11 14:43:40 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
+/*
+** gnl_ prefix are for special editions of libft functions used in this project
+*/
 
 #include "get_next_line.h"
 
@@ -22,18 +26,23 @@ size_t	ft_strlen(const char *str)
 	return (len);
 }
 
-void	*gnl_calloc(size_t n_itens, size_t size)
+char	*gnl_strdup(const char *str)
 {
-	void	*ret;
+	int		str_size;
+	char	*ret;
+	size_t	i;
 
-	if (!(temp = malloc(n_itens * size)))
+	str_size = ft_strlen(str);
+	ret = (char*)malloc((str_size + 1) * sizeof(char));
+	if (!ret)
 		return (NULL);
-	while (size)
+	i = 0;
+	while (str[i])
 	{
-		*ret = 0;
-		ret++;
-		size--;
+		ret[i] = str[i];
+		i++;
 	}
+	ret[i] = '\0';
 	return (ret);
 }
 
@@ -53,31 +62,33 @@ char	*ft_strchr(const char *str, int c)
 	return ((char*)str + i);
 }
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_reallocncat(char *dst, char const *src)
 {
-	char	*join;
-	size_t	s1_len;
+	size_t	src_len;
+	size_t	dst_len;
 	size_t	i;
+	char	*temp;
+	size_t	alloc;
 
-	if (!s1 || !s2)
+	if (!dst || !src)
 		return (NULL);
-	s1_len = ft_strlen(s1);
+	src_len = ft_strlen(src);
+	dst_len = ft_strlen(dst);
 	i = 0;
-	join = malloc((s1_len + ft_strlen(s2) + 1) * sizeof(char));
-	if (!join)
+	temp = gnl_strdup(dst);
+	alloc = dst_len + src_len + 1;
+	free(dst);
+	dst = NULL;
+	if (!(dst = (char*)malloc(sizeof(char) * alloc)))
 		return (NULL);
-	while (s1[i])
+	while (i < alloc - 1)
 	{
-		join[i] = s1[i];
+		dst[i] = (i < dst_len ? temp[i] : src[i - dst_len]);
 		i++;
 	}
-	while (s2[i - s1_len])
-	{
-		join[i] = s2[i - s1_len];
-		i++;
-	}
-	join[i] = '\0';
-	return (join);
+	free(temp);
+	dst[i] = '\0';
+	return (dst);
 }
 
 char	*gnl_substr(char const *s, unsigned int start, size_t len)
@@ -90,7 +101,7 @@ char	*gnl_substr(char const *s, unsigned int start, size_t len)
 		return (NULL);
 	stti = (size_t)start;
 	subi = 0;
-	if (!(sub = ft_calloc(sizeof(char) * len + 1), len + 1))
+	if (!(sub = (char*)malloc(sizeof(char) * len + 1)))
 		return (NULL);
 	if (start >= ft_strlen(s))
 		return (sub);
@@ -102,4 +113,9 @@ char	*gnl_substr(char const *s, unsigned int start, size_t len)
 	}
 	sub[subi] = '\0';
 	return (sub);
+}
+
+void	freedom(void *ptr)
+{
+	free(ptr);
 }
