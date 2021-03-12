@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/11 18:27:14 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/11 21:34:52 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,34 @@
 ** the reason to read in a loop is due to the objective to get a line.
 */
 
-static int	hunter(int fd, char *buf, char *rf)
+static int	read_file(int fd, char *buf, char *rf)
+{
+	int	n;
+
+	n = 1;
+	while (n && !(ft_strchr(buf, '\n')))
+	{
+		n = read(fd, buf, BUFFER_SIZE);
+		if (n < 0 || n > BUFFER_SIZE)
+			return (0);
+		buf[n] = '\0';
+		rf = ft_reallocncat(rf, buf);
+	}
+	printf("rf address: \e[1;35m%p\e[0m\n", rf);
+	return (1);
+}
+
+static void	next_line(char *rf, char **line)
+{
+	size_t	i;
+
+	i = 0;
+	while (rf[i] != '\n' || rf[i] != '\0')
+		i++;
+	*line = (rf[i] == '\n' ? gnl_substr(rf, 0, i) : gnl_strdup(rf));
+}
+
+static int	hunter(int fd, char *buf, char **rf)
 {
 	if (fd < 0 || fd > RLIMIT_NOFILE)
 	{
@@ -44,55 +71,30 @@ static int	hunter(int fd, char *buf, char *rf)
 		printf("\e[1;31merror: \e[0mBUFFER_SIZE should be greater than zero.\n");
 		return (1);
 	}
-	else if (!buffer)
+	else if (!buf)
 	{
 		printf("Malloc could not fetch the solicited amount of memory.\n");
 		return (1);
 	}
-	else if (!(read_file(fd, buffer, rf)))
+	else if (!(read_file(fd, buf, rf)))
 	{
 		printf("\e[1;31error: \e[0mRead can't read from file");
 		return (1);
 	}
+	printf("rf address: \e[1;35m%p\e[0m\n", rf);
 	return (0);
-}
-
-static int	read_file(int fd, char *buf, char *rf)
-{
-	int	n;
-
-	n = 1;
-	while (*n && !(ft_strchr(rf, '\n')))
-	{
-		*n = read(fd, buf, BUFFER_SIZE);
-		if (*n < 0)
-			return (0);
-		buffer[n] = '\0';
-		rf = ft_reallocncat(rf, buffer);
-	}
-	return (1);
-}
-
-static void	*next_line(char *rf, char **line)
-{
-	size_t	i;
-
-	i = 0;
-	while (rf[i] != '\n' || rf[i] != '\0')
-		i++;
-	*line = (rf[i] == '\n' ? gnl_substr(rf, 0, i) : ft_strdup(rf));
 }
 
 int	get_next_line(int fd, char **line)
 {
 	static char	*rf;
-	int			*n;
 	char		*buffer;
 
 	if (!rf)
 		rf = gnl_strdup("");
+	printf("rf address: \e[1;35m%p\e[0m\n", rf);
 	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (hunter(fd, line, buffer))
+	if (hunter(fd, buffer, &rf))
 		return (-1);
 	free(buffer);
 	next_line(rf, line);
