@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/11 23:36:40 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/12 00:39:34 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static int	read_file(int fd, char *buf, char **rf)
 		n = read(fd, buf, BUFFER_SIZE);
 		if (n < 0 || n > BUFFER_SIZE)
 			return (n);
+		printf("n: \e[1;32m%i\e[0m\n", n);
 		buf[n] = '\0';
 		*rf = ft_reallocncat(*rf, buf);
 	}
@@ -53,8 +54,11 @@ static void	next_line(char *rf, char **line)
 	size_t	i;
 
 	i = 0;
-	while (rf[i] != '\n' || rf[i] != '\0')
+	while (rf[i] != '\n' && rf[i] != '\0')
+	{
 		i++;
+		printf("\e[1;32m%zu\e[0m\n", i);
+	}
 	*line = (rf[i] == '\n' ? gnl_substr(rf, 0, i) : gnl_strdup(rf));
 }
 
@@ -80,6 +84,7 @@ static int	hunter(int fd, char *buf, char **rf, int *nread)
 		printf("\e[1;31error: \e[0mRead can't read from file");
 		return (1);
 	}
+	printf("\e[0;32mEverything ok\e[0m\n");
 	return (0);
 }
 
