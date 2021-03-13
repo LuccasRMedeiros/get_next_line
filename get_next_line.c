@@ -48,21 +48,25 @@ static int	read_file(int fd, char *buf, char **rf)
 	return (n);
 }
 
-static void	next_line(char **rf, char **line)
+static char	*next_line(char *rf, char **line, int nbytes)
 {
 	size_t	i;
 	char	*holder;
 
 	i = 0;
-	while (rf[0][i] != '\n' && rf[0][i] != '\0')
+	holder = NULL;
+	while (rf[i] != '\n' && rf[i] != '\0')
 	{
 		i++;
 	}
 	*line = gnl_substr(*rf, 0, i);
-	holder = gnl_substr(*rf, i + 1, ft_strlen(*rf));
-	free(*rf);
-	*rf = gnl_strdup(holder);
-	free(holder);
+	if (rf[i] == '\n')
+		holder = gnl_substr(*rf, i + 1, ft_strlen(*rf));
+	free(rf);
+	if (nbytes != 0)
+		if(!holder)
+			return (NULL);
+	return (holder);
 }
 
 static int	hunter(int fd, char *buf, char **rf)
@@ -98,10 +102,9 @@ int	get_next_line(int fd, char **line)
 	free(buffer);
 	if (nread < 0)
 		return (-1);
-	next_line(&rf, line);
+	rf = next_line(rf, line, nread);
 	if (!nread)
 	{
-		free(rf);
 		return (0);
 	}
 	return (1);
