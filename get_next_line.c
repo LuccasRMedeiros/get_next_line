@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/12 00:39:34 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/12 22:30:33 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,73 +37,72 @@ static int	read_file(int fd, char *buf, char **rf)
 	int	n;
 
 	n = 1;
-	while (n && !(ft_strchr(buf, '\n')))
+	while (n && !(ft_strpchr(*rf, '\n')))
 	{
 		n = read(fd, buf, BUFFER_SIZE);
 		if (n < 0 || n > BUFFER_SIZE)
 			return (n);
-		printf("n: \e[1;32m%i\e[0m\n", n);
-		buf[n] = '\0';
 		*rf = ft_reallocncat(*rf, buf);
 	}
 	return (n);
 }
 
-static void	next_line(char *rf, char **line)
+static void	next_line(char **rf, char **line)
 {
 	size_t	i;
+	char	*holder;
 
 	i = 0;
-	while (rf[i] != '\n' && rf[i] != '\0')
+	while (rf[0][i] != '\n' && rf[0][i] != '\0')
 	{
 		i++;
-		printf("\e[1;32m%zu\e[0m\n", i);
 	}
-	*line = (rf[i] == '\n' ? gnl_substr(rf, 0, i) : gnl_strdup(rf));
+	*line = gnl_substr(*rf, 0, i);
+	holder = ft_strpchr(*rf, '\n');
+	free(*rf);
+	*rf = gnl_strdup("");
+	*rf = ft_reallocncat(*rf, holder);
 }
 
-static int	hunter(int fd, char *buf, char **rf, int *nread)
+static int	hunter(int fd, char *buf, char **rf)
 {
+	int	nread;
+
 	if (fd < 0 || fd > RLIMIT_NOFILE)
 	{
-		printf("Problem encountered with fd value (\e[1;32m%i\e[0m\n", fd);
-		return (1);
+		return (-1);
 	}
 	else if (BUFFER_SIZE <= 0)
 	{
-		printf("\e[1;31merror: \e[0mBUFFER_SIZE should be greater than zero.\n");
-		return (1);
+		return (-1);
 	}
 	else if (!buf)
 	{
-		printf("Malloc could not fetch the solicited amount of memory.\n");
-		return (1);
+		return (-1);
 	}
-	else if ((*nread = read_file(fd, buf, rf) < 0))
-	{
-		printf("\e[1;31error: \e[0mRead can't read from file");
-		return (1);
-	}
-	printf("\e[0;32mEverything ok\e[0m\n");
-	return (0);
+	nread = read_file(fd, buf, rf);
+	return (nread);
 }
 
 int	get_next_line(int fd, char **line)
 {
 	static char	*rf;
-	int			*nread;
+	int			nread;
 	char		*buffer;
 
 	if (!rf)
 		rf = gnl_strdup("");
 	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
-	if (hunter(fd, buffer, &rf, nread))
+	nread = hunter(fd, buffer, &rf);
+	if (nread < 0)
 		return (-1);
 	free(buffer);
-	next_line(rf, line);
-	free(rf);
+	next_line(&rf, line);
 	if (!nread)
+	{
+		free(rf);
 		return (0);
+	}
 	return (1);
 }
 
@@ -111,9 +110,16 @@ int	main()
 {
 	char *content = (char*)malloc(sizeof(char) * 2495);
 	int	fd = open("TRoS.txt", O_RDONLY, 0);
-	int	gnl = get_next_line(fd, &content);
+	int	gnl = 1;
+	int	counter = 0;
 
-	printf("gnl: \e[1;32m%i\e[0m\n", gnl);
+	while (gnl && counter <= 39)
+	{
+		counter++;
+		printf("counter: \e[1;31m%i\e[0m\n", counter);
+		gnl = get_next_line(fd, &content);
+		printf("line = \e[1;33m%s\e[0m\n", content);
+	}
 	free(content);
 	return 0;
 }
