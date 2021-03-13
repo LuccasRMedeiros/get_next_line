@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:16:40 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/12 22:34:46 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/12 23:34:43 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,7 +46,7 @@ char	*gnl_strdup(const char *str)
 	return (ret);
 }
 
-char	*ft_strpchr(const char *str, int c)
+char	*ft_strchr(const char *str, int c)
 {
 	unsigned char	find;
 	size_t			i;
@@ -59,7 +59,7 @@ char	*ft_strpchr(const char *str, int c)
 			return (NULL);
 		i++;
 	}
-	return ((char*)str + i + 1);
+	return ((char*)str + i);
 }
 
 char	*ft_reallocncat(char *dst, char const *src)

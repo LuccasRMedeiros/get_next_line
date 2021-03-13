@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/12 22:30:33 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/12 23:45:18 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ static int	read_file(int fd, char *buf, char **rf)
 	int	n;
 
 	n = 1;
-	while (n && !(ft_strpchr(*rf, '\n')))
+	while (n && !(ft_strchr(*rf, '\n')))
 	{
 		n = read(fd, buf, BUFFER_SIZE);
 		if (n < 0 || n > BUFFER_SIZE)
@@ -58,10 +58,10 @@ static void	next_line(char **rf, char **line)
 		i++;
 	}
 	*line = gnl_substr(*rf, 0, i);
-	holder = ft_strpchr(*rf, '\n');
+	holder = gnl_substr(*rf, i + 1, ft_strlen(*rf));
 	free(*rf);
-	*rf = gnl_strdup("");
-	*rf = ft_reallocncat(*rf, holder);
+	*rf = gnl_strdup(holder);
+	free(holder);
 }
 
 static int	hunter(int fd, char *buf, char **rf)
@@ -106,9 +106,9 @@ int	get_next_line(int fd, char **line)
 	return (1);
 }
 
-int	main()
+/*int	main()
 {
-	char *content = (char*)malloc(sizeof(char) * 2495);
+	char *content = malloc(sizeof(char) * 2495);
 	int	fd = open("TRoS.txt", O_RDONLY, 0);
 	int	gnl = 1;
 	int	counter = 0;
@@ -122,4 +122,4 @@ int	main()
 	}
 	free(content);
 	return 0;
-}
+}*/
