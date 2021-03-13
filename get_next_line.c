@@ -59,9 +59,9 @@ static char	*next_line(char *rf, char **line, int nbytes)
 	{
 		i++;
 	}
-	*line = gnl_substr(*rf, 0, i);
+	*line = gnl_substr(rf, 0, i);
 	if (rf[i] == '\n')
-		holder = gnl_substr(*rf, i + 1, ft_strlen(*rf));
+		holder = gnl_substr(rf, i + 1, ft_strlen(rf));
 	free(rf);
 	if (nbytes != 0)
 		if(!holder)
