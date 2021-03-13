@@ -6,25 +6,19 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:34 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/12 23:34:51 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/13 14:49:42 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE
 # define GET_NEXT_LINE
 
-# include <sys/types.h>
-# include <sys/stat.h>
+# include <stdlib.h>
+# include <unistd.h>
+# include <limits.h>
+# include <sys/param.h>
 # include <sys/resource.h>
 # include <fcntl.h>
-# include <unistd.h>
-# include <string.h>
-# include <stdlib.h>
-# include <ctype.h>
-# include <limits.h>
-
-//this include is to be erased after the code be finished
-# include <stdio.h>
 
 size_t  ft_strlen(const char *str);
 char    *gnl_strdup(char const *str);
