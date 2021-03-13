@@ -95,9 +95,9 @@ int	get_next_line(int fd, char **line)
 		rf = gnl_strdup("");
 	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
 	nread = hunter(fd, buffer, &rf);
+	free(buffer);
 	if (nread < 0)
 		return (-1);
-	free(buffer);
 	next_line(&rf, line);
 	if (!nread)
 	{
