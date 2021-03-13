@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/13 00:11:55 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/13 13:51:47 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,12 +56,14 @@ static char	*next_line(char *rf, char **line, int nbytes)
 	i = 0;
 	holder = NULL;
 	while (rf[i] != '\n' && rf[i] != '\0')
-	{
 		i++;
-	}
-	*line = gnl_substr(rf, 0, i);
 	if (rf[i] == '\n')
-		holder = gnl_substr(rf, i + 1, ft_strlen(rf));
+	{
+		*line = gnl_substr(rf, 0, i);
+		holder = gnl_strdup(rf + (i + 1));
+	}
+	else
+		*line = gnl_strdup(rf);
 	free(rf);
 	if (nbytes != 0)
 		if(!holder)
@@ -69,43 +71,53 @@ static char	*next_line(char *rf, char **line, int nbytes)
 	return (holder);
 }
 
-static int	hunter(int fd, char *buf, char **rf)
+static int	hunter(int fd, char **line, char *buf, char **rf)
 {
 	int	nread;
 
 	if (fd < 0 || fd > RLIMIT_NOFILE)
-	{
 		return (-1);
-	}
+	else if(!line)
+		return (-1);
 	else if (BUFFER_SIZE <= 0)
-	{
 		return (-1);
-	}
 	else if (!buf)
-	{
 		return (-1);
-	}
+	if (!*rf)
+		*rf = gnl_strdup("");
 	nread = read_file(fd, buf, rf);
 	return (nread);
 }
 
-int	get_next_line(int fd, char **line)
+int			get_next_line(int fd, char **line)
 {
 	static char	*rf;
 	int			nread;
 	char		*buffer;
 
-	if (!rf)
-		rf = gnl_strdup("");
 	buffer = (char *)malloc(sizeof(char) * BUFFER_SIZE + 1);
-	nread = hunter(fd, buffer, &rf);
+	nread = hunter(fd, line, buffer, &rf);
 	free(buffer);
 	if (nread < 0)
 		return (-1);
 	rf = next_line(rf, line, nread);
 	if (!nread)
-	{
 		return (0);
-	}
 	return (1);
 }
+
+/*int	main()
+{
+	char *content = (char*)malloc(sizeof(char) * 2495);
+	int fd = open("TRoS_oneline.txt", O_RDONLY);
+	int	counter = 0;
+	int gnl = 1;
+
+	while (gnl && counter <= 50)
+	{
+		counter++;
+		gnl = get_next_line(fd, &content);
+	}
+	free(content);
+	return 0;
+}*/
