@@ -6,7 +6,7 @@
 /*   By: lrocigno <lrocigno@student.42sp.org>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/03/05 10:12:13 by lrocigno          #+#    #+#             */
-/*   Updated: 2021/03/12 23:45:18 by lrocigno         ###   ########.fr       */
+/*   Updated: 2021/03/13 00:11:55 by lrocigno         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,6 +42,7 @@ static int	read_file(int fd, char *buf, char **rf)
 		n = read(fd, buf, BUFFER_SIZE);
 		if (n < 0 || n > BUFFER_SIZE)
 			return (n);
+		buf[n] = '\0';
 		*rf = ft_reallocncat(*rf, buf);
 	}
 	return (n);
@@ -105,21 +106,3 @@ int	get_next_line(int fd, char **line)
 	}
 	return (1);
 }
-
-/*int	main()
-{
-	char *content = malloc(sizeof(char) * 2495);
-	int	fd = open("TRoS.txt", O_RDONLY, 0);
-	int	gnl = 1;
-	int	counter = 0;
-
-	while (gnl && counter <= 39)
-	{
-		counter++;
-		printf("counter: \e[1;31m%i\e[0m\n", counter);
-		gnl = get_next_line(fd, &content);
-		printf("line = \e[1;33m%s\e[0m\n", content);
-	}
-	free(content);
-	return 0;
-}*/
